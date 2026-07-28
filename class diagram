@@ -1,0 +1,47 @@
++-------------------+                  +-------------------+
+       |       User        |                  |      Category     |
+       +-------------------+                  +-------------------+
+       | _id: ObjectId     |                  | _id: ObjectId     |
+       | fullName: string  |                  | name: string      |
+       | email: string     |                  | icon: string      |
+       | password: string  |                  +-------------------+
+       | phone: string     |                            ^
+       | avatarUrl: string |                            | 1
+       | role: string      |                            |
+       +-------------------+                            | (belongs to)
+                 | 1                                    |
+                 |                                      |
+                 | (creates / owns)                     |
+                 v N                                    | N
+       +--------------------------------------------------+
+       |                       Item                       |
+       +--------------------------------------------------+
+       | _id: ObjectId                                    |
+       | title: string                                    |
+       | description: string                              |
+       | price: number                                    |
+       | condition: Enum ('New', 'Like New', 'Used')      |
+       | images: Array<string> (Cloudinary URLs)          |
+       | location: string                                 |
+       | status: Enum ('Available', 'Sold', 'Reserved')   |
+       | userId: ObjectId (FK -> User)                    |
+       | categoryId: ObjectId (FK -> Category)           |
+       | aiSuggestedPrice: number                         |
+       | aiTags: Array<string>                            |
+       | createdAt: Date                                  |
+       | updatedAt: Date                                  |
+       +--------------------------------------------------+
+                 ^                                    ^
+                 | 1                                  | 1
+                 |                                    |
+                 | (item saved)                       | (target item)
+                 | N                                  | N
+       +-------------------+                  +-------------------+
+       |   FavoriteItem    |                  |      Inquiry      |
+       +-------------------+                  +-------------------+
+       | _id: ObjectId     |                  | _id: ObjectId     |
+       | userId: ObjectId  |                  | senderId: ObjectId|
+       | itemId: ObjectId  |                  | itemId: ObjectId  |
+       | createdAt: Date   |                  | message: string   |
+       +-------------------+                  | createdAt: Date   |
+                                              +-------------------+
