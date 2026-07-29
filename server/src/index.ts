@@ -19,5 +19,10 @@ app.use("/api/users", usersRouter);
 ////////////////////
 
 mongoose.connect(process.env.MONGODB_CONNECTION as string)
-  .then(() => console.log("Connected to MongoDB"))
+  .then(() => {
+    console.log("Connected to MongoDB")
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+})
   .catch((err) => console.error("Error connecting to MongoDB:", err));
