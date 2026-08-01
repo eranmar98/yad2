@@ -1,6 +1,9 @@
 import mongoose, { Document } from 'mongoose';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export interface Token {
   token: string;
@@ -76,7 +79,7 @@ const userSchema = new mongoose.Schema<IUser>({
 userSchema.methods.generateAuthToken = async function (): Promise<string> {
   const token = jwt.sign(
     { _id: this._id.toString() },
-    process.env.JWT_TOKEN_KEY!,
+    process.env.TOKEN_KEY as string,
     { expiresIn: '30d' },
   );
 

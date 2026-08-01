@@ -13,13 +13,37 @@ class UserServices {
   static async getUserByCredentials(
     email: string,
     password: string,
-  ): Promise<{ user: IUser; token: string }> {
-    const user: IUser | null = await User.findOne({ email });
+  ) { // שיניתי פה את חתימת החזרה כדי שהטייפסקריפט לא יצעק שחסרים שדות
+    let user: IUser | null = await User.findOne({ email });
     if (!user) throw new Error('User not found');
+    
     const isPasswordValid = bcrypsjs.compareSync(password, user.password);
     if (!isPasswordValid) throw new Error('Invalid password');
+    
     const token: string = await user.generateAuthToken();
-    return { user, token };
+    
+    // המרה לאובייקט רגיל
+    const userObj = user.toObject();
+    
+    // עכשיו אפשר למחוק את השדות
+    delete userObj.password;
+    delete userObj.tokens;
+    
+    return { user: userObj, token };
+  }
+
+  static async autoLogin(userId: IUser['_id'], token: string) {
+    const user: IUser | null = await User.findOne({ _id: userId, 'tokens.token': token });
+    if (!user) throw new Error('User not found');
+    
+    // המרה לאובייקט רגיל
+    const userObj = user.toObject();
+    
+    // עכשיו אפשר למחוק את השדות
+    delete userObj.password;
+    delete userObj.tokens;
+    
+    return { user: userObj, token };
   }
 }
 
