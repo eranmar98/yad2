@@ -1,0 +1,19 @@
+
+
+@import "tailwindcss";
+
+@theme {
+  --color-sage: #93AC80;
+  --color-lime: #E3F84D;
+  --color-lime-soft: #EEFA8F;
+  --color-ink: #111208;
+  --font-display: "Rubik", sans-serif;
+  --font-sans: "Heebo", sans-serif;
+  --radius-pill: 999px;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@300;400;500;600;700&display=swap");
+
+html {
+  scroll-behavior: smooth;
+}
