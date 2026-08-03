@@ -17,7 +17,7 @@ class UserServices {
     email: string,
     password: string,
   ) { // שיניתי פה את חתימת החזרה כדי שהטייפסקריפט לא יצעק שחסרים שדות
-    let user: IUser | null = await User.findOne({ email });
+    const user: IUser | null = await User.findOne({ email });
     if (!user) throw new Error('User not found');
     
     const isPasswordValid = bcrypsjs.compareSync(password, user.password);
