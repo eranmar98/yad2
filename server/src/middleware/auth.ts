@@ -24,6 +24,9 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     if (!user) {
       throw new Error();
     }
+    //לתקן
+    req.user = user;
+    req.token = token; // Assign token to the extended Request object
 
     next();
   } catch (e: unknown) {

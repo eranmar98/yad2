@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import dns from 'dns';
+import itemsRouter from './routes/items';
+// ...
 
 // Windows can hand Node's DNS resolver a link-local IPv6 nameserver that
 // it fails to query (ECONNREFUSED) even though the OS resolver works fine.
@@ -19,8 +21,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(cors());
 app.use(express.json());
-
+app.use('/api/items', itemsRouter);
 /////////// Routes ///////////
 app.use('/api/users', usersRouter);
 app.use('/api/categories', categoriesRouter);
