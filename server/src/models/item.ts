@@ -1,17 +1,16 @@
 // server/src/models/item.ts
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
 export interface IItem extends Document {
   title: string;
   description: string;
   price: number;
-  category: string;
-  suggestedCategory?: string;
-  suggestedPrice?: number;
+  category: Types.ObjectId;
   images: string[];
-  sellerId: mongoose.Types.ObjectId;
+  sellerId: Types.ObjectId;
   status: 'Active' | 'Sold';
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const itemSchema = new mongoose.Schema<IItem>({
@@ -31,23 +30,17 @@ const itemSchema = new mongoose.Schema<IItem>({
     min: 0,
   },
   category: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Category',
     required: true,
     trim: true,
-  },
-  suggestedCategory: {
-    type: String,
-    trim: true,
-  },
-  suggestedPrice: {
-    type: Number,
   },
   images: {
     type: [String],
     default: [],
   },
   sellerId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
