@@ -72,6 +72,15 @@ const userSchema = new mongoose.Schema<IUser>({
   },
 });
 
+userSchema.methods.toJSON = function () {
+  const user = this.toObject();
+
+  delete user.password;
+  delete user.tokens;
+
+  return user;
+};
+
 /**
  * Generate authentication token for the account
  */
