@@ -8,7 +8,7 @@ type ToggleMarkProps = {
     return (
       <span
         dir="ltr"
-        className={`inline-flex items-center justify-end rounded-pill bg-ink p-1 ${className}`}
+        className={`inline-flex items-center justify-end rounded-pill bg-ink p-1 transition-transform duration-150 ease-out group-hover:scale-105 ${className}`}
       >
         <span className="aspect-square h-full rounded-full bg-lime" />
       </span>

@@ -1,14 +1,22 @@
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import StatsBar from './components/StatsBar';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Browse from './pages/Browse';
 
 function App() {
   return (
-    <div className="min-h-screen bg-white">
-      <StatsBar />
-      <Navbar />
-      <Hero />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="browse" element={<Browse />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

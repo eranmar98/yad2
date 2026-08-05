@@ -1,13 +1,12 @@
-// קישורי הניווט העליון. active=true מסמן את העמוד הנוכחי
+// קישורי הניווט העליון. מצב "פעיל" נגזר מהנתיב הנוכחי (ראו Navbar), לא מוגדר כאן
 export type NavLink = {
     label: string;
     href: string;
-    active?: boolean;
   };
-  
+
   export const navLinks: NavLink[] = [
-    { label: "בית", href: "#", active: true },
-    { label: "מודעות", href: "#listings" },
+    { label: "בית", href: "/" },
+    { label: "מודעות", href: "/browse" },
     { label: "קטגוריות", href: "#categories" },
     { label: "איך זה עובד", href: "#how-it-works" },
     { label: "צור קשר", href: "#contact" },
