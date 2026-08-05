@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Types } from 'mongoose';
 import { IItem } from '../models/item';
 import ItemServices from '../dataServices/itemServices';
 
@@ -14,7 +15,7 @@ class ItemController {
       const authReq = req as AuthenticatedRequest;
       const newItem: IItem = await ItemServices.createItem({
         ...req.body,
-        sellerId: authReq.user!._id,
+        sellerId: new ObjectId(authReq.user!._id),
       });
       res.status(201).json(newItem);
     } catch (error: unknown) {
@@ -38,7 +39,7 @@ class ItemController {
     try {
       const authReq = req as AuthenticatedRequest;
       const items: IItem[] = await ItemServices.getItemsBySeller(
-        authReq.user!._id,
+        new ObjectId(authReq.user!._id),
       );
       res.status(200).json(items);
     } catch (error: unknown) {
@@ -66,7 +67,7 @@ class ItemController {
       const authReq = req as AuthenticatedRequest;
       const item = await ItemServices.updateItem(
         req.params.id as string,
-        authReq.user!._id,
+        new ObjectId(authReq.user!._id),
         req.body,
       );
       if (!item) {
@@ -85,7 +86,7 @@ class ItemController {
       const authReq = req as AuthenticatedRequest;
       const item = await ItemServices.deleteItem(
         req.params.id as string,
-        authReq.user!._id,
+        new ObjectId(authReq.user!._id),
       );
       if (!item) {
         res.status(404).json({ error: 'Item not found' });
