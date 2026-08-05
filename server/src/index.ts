@@ -12,6 +12,8 @@ dns.setServers(['8.8.8.8', '1.1.1.1']);
 //////////// Route imports ///////////
 import usersRouter from './routes/users';
 import categoriesRouter from './routes/categories';
+import itemsRouter from './routes/items';
+import inquiriesRouter from './routes/inquiries';
 
 dotenv.config();
 
@@ -19,12 +21,13 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(cors());
 app.use(express.json());
-app.use('/api/items', itemsRouter);
+
 /////////// Routes ///////////
 app.use('/api/users', usersRouter);
 app.use('/api/categories', categoriesRouter);
+app.use('/api/items', itemsRouter);
+app.use('/api/inquiries', inquiriesRouter);
 ////////////////////
 
 mongoose
