@@ -1,11 +1,9 @@
-
-
 @import "tailwindcss";
 
 @theme {
   --color-sage: #93AC80;
-  --color-lime: #E3F84D;
-  --color-lime-soft: #EEFA8F;
+  --color-navy: #152A4E;
+  --color-navy-soft: #22406F;
   --color-ink: #111208;
   --font-display: "Rubik", sans-serif;
   --font-sans: "Heebo", sans-serif;
@@ -32,6 +30,20 @@ html {
 
 .animate-fade-in-up {
   animation: fade-in-up 500ms var(--ease-out-strong) both;
+}
+
+@keyframes gradient-flow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-flow {
+  background-size: 200% 200%;
+  animation: gradient-flow 6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

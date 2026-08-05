@@ -5,7 +5,7 @@ export interface IItem extends Document {
   title: string;
   description: string;
   price: number;
-  category: Types.ObjectId;
+  category: string;
   images: string[];
   sellerId: Types.ObjectId;
   status: 'Active' | 'Sold';
@@ -30,8 +30,7 @@ const itemSchema = new mongoose.Schema<IItem>({
     min: 0,
   },
   category: {
-    type: Schema.Types.ObjectId,
-    ref: 'Category',
+    type: String,
     required: true,
     trim: true,
   },

@@ -1,27 +1,25 @@
-import { useNavigate } from 'react-router-dom';
-import PillButton from './PillButton';
+import SearchBar from './SearchBar';
+import CategoryCards from './CategoryCards';
 
 export default function Hero() {
-  const navigate = useNavigate();
-
   return (
-    <section className="animate-fade-in-up mx-auto max-w-6xl px-6 py-16 text-center md:py-24">
-      <h1 className="font-display text-4xl font-extrabold leading-tight text-ink md:text-6xl">
-        קונים ומוכרים פריטים משומשים,
+    <section className="animate-fade-in-up relative overflow-hidden bg-gradient-to-b from-sky-50 via-white to-white px-6 pb-16 pt-8 text-center md:pb-20 md:pt-10">
+      <div className="pointer-events-none absolute -top-32 -right-20 -z-10 h-96 w-96 rounded-full bg-navy/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -left-20 -z-10 h-96 w-96 rounded-full bg-sky-300/30 blur-3xl" />
+
+      <h1 className="mx-auto max-w-3xl font-display text-4xl font-extrabold leading-tight text-ink md:text-6xl">
+        קונים ומוכרים <span className="text-navy">פריטים משומשים</span>,
         <br />
-        <span className="bg-ink px-2 text-lime">בלי כאב ראש</span>
+        בלי כאב ראש
       </h1>
 
-      <p className="mx-auto mt-6 max-w-xl font-sans text-lg text-ink/80">
-        מפרסמים מודעה בשניות, ובינה מלאכותית עוזרת לבחור קטגוריה ומחיר הוגן.
+      <p className="mx-auto mt-6 max-w-xl font-sans text-lg text-ink/60">
+        מפרסמים מודעה בשניות, ובינה מלאכותית עוזרת לבחור קטגוריה ומחיר הוגן
       </p>
 
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-        <PillButton variant="primary">פרסמו מודעה בחינם</PillButton>
-        <PillButton variant="secondary" onClick={() => navigate('/browse')}>
-          גלו מודעות
-        </PillButton>
-      </div>
+      <SearchBar />
+
+      <CategoryCards />
     </section>
   );
 }
