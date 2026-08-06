@@ -23,8 +23,9 @@ class UserController {
     try {
         const user:{ user: IUser, token: string} = await UserServices.getUserByCredentials(req.body.email, req.body.password);
         res.status(200).json(user);;
-    } catch (error: Error | any) {
-        res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        res.status(500).json({ error: message });
     }
   }
 
@@ -36,8 +37,9 @@ class UserController {
       const userIdObject = new mongoose.Types.ObjectId(userId);
       const user:{ user: IUser, token: string} = await UserServices.autoLogin(userIdObject, token as string);
       res.status(200).json(user);
-    } catch (error: Error | any) {
-      res.status(500).json({ error: error.message });      
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: message });
     }
   }
 }
