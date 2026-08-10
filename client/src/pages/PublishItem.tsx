@@ -4,6 +4,11 @@ import axios from 'axios';
 import { FaHome, FaCar, FaShoppingBag } from 'react-icons/fa';
 import ItemsServices from '../services/itemsServices';
 import PillButton from '../components/PillButton';
+import { getAiClient } from '../api/ai';
+import { createUserContent, createPartFromBase64, type Part } from '@google/genai';
+import { toast } from 'react-toastify';
+import { SiGooglegemini } from "react-icons/si";
+
 
 const categories = [
   { icon: FaHome, label: 'נדל"ן' },
@@ -21,6 +26,7 @@ export default function PublishItem() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingAi, setIsLoadingAi] = useState<boolean>(false)
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -64,6 +70,51 @@ export default function PublishItem() {
     }
   };
 
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleGenerate = async () => {
+
+    const prompt = `כתוב לי או שפר את המודעה שתהיה קצרה ומושכת למכירת ${category} עם הכותרת "${title}" ותיאור "${description}". המחיר הוא ${price} ש"ח.${
+      imageFile ? ' התבסס גם על התמונה המצורפת של הפריט.' : ''
+    } חשוב מאוד: החזר אך ורק את טקסט התיאור עצמו, ללא כותרות, ללא הסברים וללא עטיפה של מרכאות או Markdown.`;
+
+    if (!prompt.trim()) return;
+
+    setIsLoadingAi(true);
+
+    try {
+      const ai = getAiClient();
+      const parts: (string | Part)[] = [prompt];
+      if (imageFile) {
+        const base64Data = await fileToBase64(imageFile);
+        parts.push(createPartFromBase64(base64Data, imageFile.type));
+      }
+
+      const result = await ai.models.generateContent({
+        model: 'gemini-3.5-flash', // The recommended model for general text tasks
+        contents: createUserContent(parts),
+      });
+
+      if (!result.text) {
+        toast.error('לא התקבלה תגובה מהמודל. נסה שוב מאוחר יותר.');
+        return;
+      }
+
+      setDescription(result.text);
+    } catch (error) {
+      console.error('Error calling Gemini:', error);
+      toast.error('שגיאה ביצירת תוכן. נסה שוב מאוחר יותר.');
+    } finally {
+      setIsLoadingAi(false);
+    }
+  };
+
   return (
     <section className="mx-auto max-w-2xl px-6 py-16">
       <h1 className="text-center font-display text-3xl font-extrabold text-ink">פרסום מודעה חדשה</h1>
@@ -102,7 +153,18 @@ export default function PublishItem() {
               />
             </div>
             <div>
-              <label className="mb-1 block font-sans text-sm text-ink/70">תיאור</label>
+              <div className="mb-1 flex items-center justify-between gap-2">
+                <label className="block font-sans text-sm text-ink/70">תיאור</label>
+                <button
+                  type="button"
+                  onClick={handleGenerate}
+                  disabled={isLoadingAi || !category}
+                  className="inline-flex items-center gap-1.5 rounded-pill border border-navy/15 bg-navy/5 px-3 py-1.5 font-sans text-xs font-medium text-navy transition-[background-color,color,transform,box-shadow] duration-150 ease-out hover:scale-[1.03] hover:border-navy/0 hover:text-white hover:shadow-sm hover:bg-gradient-to-r hover:from-navy hover:via-sky-500 hover:to-navy-soft hover:bg-[length:200%_200%] hover:animate-gradient-flow active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-navy/5 disabled:hover:text-navy"
+                >
+                  <SiGooglegemini size={13} className={isLoadingAi ? 'animate-spin' : ''} />
+                  {isLoadingAi ? 'מייצר תיאור...' : 'שיפור תיאור באמצעות AI'}
+                </button>
+              </div>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}

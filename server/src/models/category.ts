@@ -4,6 +4,7 @@ import mongoose, { Document } from 'mongoose';
 export interface ICategory extends Document {
   name: string;
   icon: string;
+  subCetagories: string[];
 }
 
 const categorySchema = new mongoose.Schema<ICategory>({
