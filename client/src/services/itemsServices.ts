@@ -41,8 +41,8 @@ class ItemsServices {
     return data;
   }
 
-  static async getItems(): Promise<Item[]> {
-    const { data } = await api.get<Item[]>('/items');
+  static async getItems(filters: { keyword?: string; category?: string } = {}): Promise<Item[]> {
+    const { data } = await api.get<Item[]>('/items', { params: filters });
     return data;
   }
 }

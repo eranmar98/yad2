@@ -8,17 +8,27 @@ import { getAiClient } from '../api/ai';
 import { createUserContent, createPartFromBase64, type Part } from '@google/genai';
 import { toast } from 'react-toastify';
 import { SiGooglegemini } from "react-icons/si";
+import { categoryTree, type CategoryNode } from '../data/categories';
 
+const categoryIcons: Record<string, typeof FaHome> = {
+  'נדל"ן': FaHome,
+  'רכבים': FaCar,
+  'מוצרים': FaShoppingBag,
+};
 
-const categories = [
-  { icon: FaHome, label: 'נדל"ן' },
-  { icon: FaCar, label: 'רכבים' },
-  { icon: FaShoppingBag, label: 'מוצרים' },
-];
+function getOptionsAtLevel(path: string[]): CategoryNode[] {
+  let nodes = categoryTree;
+  for (const label of path) {
+    const found = nodes.find((n) => n.label === label);
+    if (!found?.subCategories) return [];
+    nodes = found.subCategories;
+  }
+  return nodes;
+}
 
 export default function PublishItem() {
   const navigate = useNavigate();
-  const [category, setCategory] = useState('');
+  const [categoryPath, setCategoryPath] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -27,6 +37,13 @@ export default function PublishItem() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingAi, setIsLoadingAi] = useState<boolean>(false)
+
+  const isCategoryComplete = categoryPath.length > 0 && getOptionsAtLevel(categoryPath).length === 0;
+  const categoryLabel = categoryPath.join(' / ');
+
+  const handleSelectAt = (level: number, label: string) => {
+    setCategoryPath((prev) => [...prev.slice(0, level), label]);
+  };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -38,8 +55,8 @@ export default function PublishItem() {
     e.preventDefault();
     setError('');
 
-    if (!category) {
-      setError('יש לבחור קטגוריה');
+    if (!isCategoryComplete) {
+      setError('יש לבחור קטגוריה עד הסוף');
       return;
     }
     if (!title.trim() || !description.trim() || !price) {
@@ -53,7 +70,7 @@ export default function PublishItem() {
         title: title.trim(),
         description: description.trim(),
         price: Number(price),
-        category,
+        category: categoryLabel,
         image: imageFile,
       });
       navigate('/my-listings');
@@ -80,7 +97,7 @@ export default function PublishItem() {
 
   const handleGenerate = async () => {
 
-    const prompt = `כתוב לי או שפר את המודעה שתהיה קצרה ומושכת למכירת ${category} עם הכותרת "${title}" ותיאור "${description}". המחיר הוא ${price} ש"ח.${
+    const prompt = `כתוב לי או שפר את המודעה שתהיה קצרה ומושכת למכירת ${categoryLabel} עם הכותרת "${title}" ותיאור "${description}". המחיר הוא ${price} ש"ח.${
       imageFile ? ' התבסס גם על התמונה המצורפת של הפריט.' : ''
     } חשוב מאוד: החזר אך ורק את טקסט התיאור עצמו, ללא כותרות, ללא הסברים וללא עטיפה של מרכאות או Markdown.`;
 
@@ -97,7 +114,7 @@ export default function PublishItem() {
       }
 
       const result = await ai.models.generateContent({
-        model: 'gemini-3.5-flash', // The recommended model for general text tasks
+        model: 'gemini-3.5-flash',
         contents: createUserContent(parts),
       });
 
@@ -122,21 +139,53 @@ export default function PublishItem() {
       <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-8">
         <div>
           <p className="mb-3 font-sans text-sm font-bold text-ink">1. באיזו קטגוריה?</p>
-          <div className="grid grid-cols-3 gap-3">
-            {categories.map(({ icon: Icon, label }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => setCategory(label)}
-                className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition-colors duration-150 ease-out ${
-                  category === label ? 'border-navy bg-navy/5' : 'border-ink/10 hover:border-navy/40'
-                }`}
-              >
-                <Icon size={22} className={category === label ? 'text-navy' : 'text-ink/60'} />
-                <span className="font-sans text-sm font-medium text-ink">{label}</span>
-              </button>
-            ))}
-          </div>
+
+          {[0, 1, 2].map((level) => {
+            const options = getOptionsAtLevel(categoryPath.slice(0, level));
+            if (options.length === 0) return null;
+            return (
+              <div key={level} className={level === 0 ? '' : 'mt-4'}>
+                {level > 0 && (
+                  <p className="mb-2 font-sans text-sm text-ink/70">{level === 1 ? 'תת-קטגוריה' : 'סוג'}</p>
+                )}
+                <div className={level === 0 ? 'grid grid-cols-3 gap-3' : 'flex flex-wrap gap-2'}>
+                  {options.map((node) => {
+                    const isSelected = categoryPath[level] === node.label;
+                    if (level === 0) {
+                      const Icon = categoryIcons[node.label] ?? FaShoppingBag;
+                      return (
+                        <button
+                          key={node.label}
+                          type="button"
+                          onClick={() => handleSelectAt(level, node.label)}
+                          className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition-colors duration-150 ease-out ${
+                            isSelected ? 'border-navy bg-navy/5' : 'border-ink/10 hover:border-navy/40'
+                          }`}
+                        >
+                          <Icon size={22} className={isSelected ? 'text-navy' : 'text-ink/60'} />
+                          <span className="font-sans text-sm font-medium text-ink">{node.label}</span>
+                        </button>
+                      );
+                    }
+                    return (
+                      <button
+                        key={node.label}
+                        type="button"
+                        onClick={() => handleSelectAt(level, node.label)}
+                        className={`rounded-pill border px-4 py-2 font-sans text-sm transition-colors duration-150 ease-out ${
+                          isSelected
+                            ? 'border-navy bg-navy text-white'
+                            : 'border-ink/15 text-ink/70 hover:border-navy/40'
+                        }`}
+                      >
+                        {node.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <div>
@@ -158,7 +207,7 @@ export default function PublishItem() {
                 <button
                   type="button"
                   onClick={handleGenerate}
-                  disabled={isLoadingAi || !category}
+                  disabled={isLoadingAi || categoryPath.length === 0}
                   className="inline-flex items-center gap-1.5 rounded-pill border border-navy/15 bg-navy/5 px-3 py-1.5 font-sans text-xs font-medium text-navy transition-[background-color,color,transform,box-shadow] duration-150 ease-out hover:scale-[1.03] hover:border-navy/0 hover:text-white hover:shadow-sm hover:bg-gradient-to-r hover:from-navy hover:via-sky-500 hover:to-navy-soft hover:bg-[length:200%_200%] hover:animate-gradient-flow active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-navy/5 disabled:hover:text-navy"
                 >
                   <SiGooglegemini size={13} className={isLoadingAi ? 'animate-spin' : ''} />

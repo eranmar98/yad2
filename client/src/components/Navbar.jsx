@@ -39,13 +39,13 @@ export default function Navbar() {
 
                 <div className="invisible absolute top-full right-0 z-10 mt-2 w-44 rounded-2xl border border-navy/10 bg-white p-2 opacity-0 shadow-xl transition-[opacity,visibility] duration-150 ease-out group-hover:visible group-hover:opacity-100">
                   {subCategories.map((sub) => (
-                    <a
+                    <Link
                       key={sub}
-                      href="#"
+                      to={`/browse?category=${encodeURIComponent(sub)}`}
                       className="block rounded-lg px-3 py-2 font-sans text-sm text-ink/80 transition-colors duration-150 ease-out hover:bg-navy/5 hover:text-navy"
                     >
                       {sub}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </li>
