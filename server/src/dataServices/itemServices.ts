@@ -1,6 +1,10 @@
 import mongoose, { QueryFilter } from 'mongoose';
 import Item, { IItem } from '../models/item';
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 class ItemServices {
   static async createItem(itemData: Partial<IItem>): Promise<IItem> {
     const newItem = new Item(itemData);
@@ -8,7 +12,19 @@ class ItemServices {
   }
 
   static async getItems(filter: QueryFilter<IItem> = {}): Promise<IItem[]> {
-    return await Item.find(filter).sort({ createdAt: -1 });
+    const { category, keyword, ...rest } = filter as { category?: string; keyword?: string } &
+      QueryFilter<IItem>;
+    const query: QueryFilter<IItem> = { ...rest };
+    if (category) {
+      // A category path also matches its subcategories, e.g. "מוצרים" matches "מוצרים / טלפונים".
+      query.category = new RegExp(`^${escapeRegExp(category)}($| / )`);
+    }
+    if (keyword) {
+      // Free-text search across title/description; "keyword" isn't a schema field on its own.
+      const keywordRegex = new RegExp(escapeRegExp(keyword), 'i');
+      query.$or = [{ title: keywordRegex }, { description: keywordRegex }];
+    }
+    return await Item.find(query).sort({ createdAt: -1 });
   }
 
   static async getItemsBySeller(sellerId: mongoose.Types.ObjectId): Promise<IItem[]> {

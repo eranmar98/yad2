@@ -47,8 +47,14 @@ export default function SearchBar() {
     setIsSearching(false);
 
     const params = new URLSearchParams();
-    params.set('q', keyword ?? trimmed);
     if (category) params.set('category', category);
+    // Only fall back to the raw query text when nothing matched a category —
+    // otherwise it re-filters an already-matched category by its own name and finds nothing.
+    if (keyword) {
+      params.set('q', keyword);
+    } else if (!category) {
+      params.set('q', trimmed);
+    }
     navigate(`/browse?${params.toString()}`);
   };
 

@@ -1,4 +1,5 @@
 import { FaHome, FaCar, FaShoppingBag } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const categories = [
   {
@@ -22,11 +23,21 @@ const categories = [
 ];
 
 export default function CategoryCards() {
+  const navigate = useNavigate();
+
   return (
     <div className="mx-auto mt-10 grid max-w-4xl gap-5 sm:grid-cols-3">
       {categories.map(({ icon: Icon, label, description, gradient }) => (
         <div
           key={label}
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate(`/browse?category=${encodeURIComponent(label)}`)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              navigate(`/browse?category=${encodeURIComponent(label)}`);
+            }
+          }}
           className={`group relative flex cursor-pointer flex-col items-center gap-3 overflow-hidden rounded-3xl bg-gradient-to-br ${gradient} p-8 text-center shadow-xl shadow-navy/20 transition-transform duration-200 ease-out hover:-translate-y-2`}
         >
           <div className="pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/10 blur-2xl transition-opacity duration-200 group-hover:opacity-70" />
