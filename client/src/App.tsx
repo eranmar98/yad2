@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Browse from './pages/Browse';
 import PublishItem from './pages/PublishItem';
 import MyListings from './pages/MyListings';
+import Inquiries from './pages/Inquiries';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="publish" element={<PublishItem />} />
             <Route path="my-listings" element={<MyListings />} />
+            <Route path="inquiries" element={<Inquiries />} />
           </Route>
         </Route>
       </Routes>

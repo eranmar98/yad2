@@ -15,6 +15,7 @@ export type Item = {
   price: number;
   category: string;
   images: string[];
+  sellerId: string;
   status: 'Active' | 'Sold';
   createdAt: string;
 };

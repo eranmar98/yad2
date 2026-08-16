@@ -21,21 +21,31 @@ class UserController {
 
   static async getUserByCredentials(req: Request, res: Response) {
     try {
-        const user:{ user: IUser, token: string} = await UserServices.getUserByCredentials(req.body.email, req.body.password);
-        res.status(200).json(user);;
+      const user: { user: IUser; token: string } =
+        await UserServices.getUserByCredentials(
+          req.body.email,
+          req.body.password,
+        );
+      res.status(200).json(user);
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        res.status(500).json({ error: message });
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: message });
     }
   }
 
   static async autoLogin(req: Request, res: Response) {
     try {
-      const token = req.header('Authorization')?.replace('Bearer ', '');  
-      const decoded = jwt.verify(token as string, process.env.TOKEN_KEY as string) as { _id: string };
+      const token = req.header('Authorization')?.replace('Bearer ', '');
+      const decoded = jwt.verify(
+        token as string,
+        process.env.TOKEN_KEY as string,
+      ) as { _id: string };
       const userId = decoded._id as string;
       const userIdObject = new mongoose.Types.ObjectId(userId);
-      const user:{ user: IUser, token: string} = await UserServices.autoLogin(userIdObject, token as string);
+      const user: { user: IUser; token: string } = await UserServices.autoLogin(
+        userIdObject,
+        token as string,
+      );
       res.status(200).json(user);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';

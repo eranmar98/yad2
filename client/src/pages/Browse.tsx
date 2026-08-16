@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import ItemsServices, { type Item } from '../services/itemsServices';
 import { categoryTree } from '../data/categories';
+import ContactSellerButton from '../components/ContactSellerButton';
 
 const REAL_ESTATE_LABEL = 'נדל"ן';
 const realEstateNode = categoryTree.find((node) => node.label === REAL_ESTATE_LABEL);
@@ -145,6 +146,7 @@ export default function Browse() {
                       <span className="font-sans text-xs font-medium text-navy">{item.category}</span>
                       <h2 className="mt-1 font-display font-bold text-ink">{item.title}</h2>
                       <p className="mt-2 font-display text-lg font-bold text-navy">{item.price} ₪</p>
+                      <ContactSellerButton item={item} className="mt-4 w-full" />
                     </div>
                   </div>
                 ))}

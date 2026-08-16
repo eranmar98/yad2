@@ -26,7 +26,9 @@ class ItemController {
 
       if (req.file) {
         const dataUri = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-        const uploadResult = await cloudinary.uploader.upload(dataUri, { folder: 'yad2' });
+        const uploadResult = await cloudinary.uploader.upload(dataUri, {
+          folder: 'yad2',
+        });
         images.push(uploadResult.secure_url);
       }
 

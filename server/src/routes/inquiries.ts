@@ -1,28 +1,11 @@
 import { Router } from 'express';
+import InquiryController from '../controllers/inquiry';
+import auth from '../middleware/auth';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.json({ message: 'List inquiries' });
-});
-
-router.post('/', (req, res) => {
-  res.status(201).json({ message: 'Create inquiry' });
-});
-
-router.get('/:id', (req, res) => {
-  const { id } = req.params;
-  res.json({ message: `Get inquiry ${id}` });
-});
-
-router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  res.json({ message: `Update inquiry ${id}` });
-});
-
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  res.json({ message: `Delete inquiry ${id}` });
-});
+router.post('/', auth, InquiryController.createInquiry);
+router.get('/mine', auth, InquiryController.getMyInquiries);
+router.get('/received', auth, InquiryController.getReceivedInquiries);
 
 export default router;

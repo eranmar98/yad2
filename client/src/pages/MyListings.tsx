@@ -16,9 +16,14 @@ export default function MyListings() {
     <section className="mx-auto max-w-4xl px-6 py-16">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="font-display text-3xl font-extrabold text-ink">המודעות שלי</h1>
-        <Link to="/publish" className="font-sans text-sm font-bold text-navy hover:underline">
-          + מודעה חדשה
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link to="/inquiries" className="font-sans text-sm font-bold text-navy hover:underline">
+            פניות שקיבלתי
+          </Link>
+          <Link to="/publish" className="font-sans text-sm font-bold text-navy hover:underline">
+            + מודעה חדשה
+          </Link>
+        </div>
       </div>
 
       {isLoading ? (

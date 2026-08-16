@@ -1,5 +1,6 @@
 import mongoose, { QueryFilter } from 'mongoose';
 import Inquiry, { IInquiry } from '../models/inquiry';
+import Item from '../models/item';
 
 class InquiryServices {
   static async createInquiry(inquiryData: Partial<IInquiry>): Promise<IInquiry> {
@@ -16,7 +17,18 @@ class InquiryServices {
   }
 
   static async getInquiriesByUser(userId: mongoose.Types.ObjectId): Promise<IInquiry[]> {
-    return await Inquiry.find({ userId }).sort({ createdAt: -1 });
+    return await Inquiry.find({ userId })
+      .sort({ createdAt: -1 })
+      .populate('itemId', 'title price images');
+  }
+
+  static async getInquiriesForSeller(sellerId: mongoose.Types.ObjectId): Promise<IInquiry[]> {
+    const sellerItems = await Item.find({ sellerId }).select('_id');
+    const itemIds = sellerItems.map((item) => item._id);
+    return await Inquiry.find({ itemId: { $in: itemIds } })
+      .sort({ createdAt: -1 })
+      .populate('itemId', 'title price images')
+      .populate('userId', 'firstName lastName email phone');
   }
 
   static async getInquiryById(id: string): Promise<IInquiry | null> {
