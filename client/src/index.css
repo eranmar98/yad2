@@ -6,6 +6,9 @@
   --color-navy: #152A4E;
   --color-navy-soft: #22406F;
   --color-ink: #111208;
+  --color-brand-purple: #7557FF;
+  --color-brand-purple-deep: #4B2FD1;
+  --color-brand-purple-soft: #A78BFA;
   --font-display: "Rubik", sans-serif;
   --font-sans: "Heebo", sans-serif;
   --radius-pill: 999px;
@@ -43,6 +46,41 @@ html {
 .animate-gradient-flow {
   background-size: 200% 200%;
   animation: gradient-flow 6s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(40px, -30px);
+  }
+}
+
+@keyframes drift-reverse {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-50px, 25px);
+  }
+}
+
+.animate-drift {
+  animation: drift 10s ease-in-out infinite;
+}
+
+.animate-drift-reverse {
+  animation: drift-reverse 13s ease-in-out infinite;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

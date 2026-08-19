@@ -4,6 +4,7 @@ import { navLinks } from '../siteContent';
 import ToggleMark from '../ToggleMark';
 import PillButton from './PillButton';
 import useUsersStore from '../store/usersStore';
+import logo from '../assets/logo.svg';
 
 const subCategories = ['נדל"ן', 'רכבים', 'מוצרים'];
 
@@ -73,8 +74,8 @@ export default function Navbar() {
 
         <div className="flex items-center justify-self-center gap-2">
           <ToggleMark />
-          <Link to="/" className={`font-display text-lg font-extrabold text-ink ${focusRing}`}>
-            לוח מודעות
+          <Link to="/" className={focusRing}>
+            <img src={logo} alt="לוח מודעות" className="h-11 w-auto" />
           </Link>
         </div>
 

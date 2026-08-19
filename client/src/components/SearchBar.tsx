@@ -59,20 +59,20 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto mt-8 flex w-full max-w-2xl items-center gap-2 rounded-pill bg-white p-2 shadow-2xl">
+    <form onSubmit={handleSubmit} className="mx-auto mt-8 flex w-full max-w-3xl items-center gap-3 rounded-pill bg-white p-3 shadow-2xl">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="מה מחפשים היום? רכב, דירה, מוצר..."
-        className="min-w-0 flex-1 bg-transparent px-4 py-3 font-sans text-ink outline-none placeholder:text-ink/40"
+        className="min-w-0 flex-1 bg-transparent px-5 py-4 font-sans text-lg text-ink outline-none placeholder:text-ink/40"
       />
       <button
         type="submit"
         disabled={isSearching}
-        className="animate-gradient-flow flex items-center gap-2 rounded-pill bg-gradient-to-r from-navy via-sky-500 to-navy-soft px-6 py-3 font-sans font-medium text-white disabled:opacity-70"
+        className="animate-gradient-flow flex items-center gap-2 rounded-pill bg-gradient-to-r from-navy via-sky-500 to-navy-soft px-8 py-4 font-sans text-lg font-medium text-white disabled:opacity-70"
       >
-        {isSearching ? <SiGooglegemini size={14} className="animate-spin" /> : <FaSearch size={14} />}
+        {isSearching ? <SiGooglegemini size={18} className="animate-spin" /> : <FaSearch size={18} />}
         {isSearching ? 'מחפשת...' : 'חיפוש'}
       </button>
     </form>
