@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import FavoriteItem, { IFavoriteItem } from '../models/favoriteItem';
 
 class FavoriteItemServices {
@@ -6,6 +7,10 @@ class FavoriteItemServices {
   ): Promise<IFavoriteItem> {
     const newFavoriteItem = new FavoriteItem(favoriteItemData);
     return await newFavoriteItem.save();
+  }
+
+  static async getUserFavorites(userId: mongoose.Types.ObjectId): Promise<IFavoriteItem[]> {
+    return await FavoriteItem.find({ userId }).populate('itemId').sort({ createdAt: -1 });
   }
 }
 

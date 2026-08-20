@@ -14,6 +14,7 @@ import usersRouter from './routes/users';
 import categoriesRouter from './routes/categories';
 import itemsRouter from './routes/items';
 import inquiriesRouter from './routes/inquiries';
+import favoriteItemsRouter from './routes/favoriteItems';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/items', itemsRouter);
 app.use('/api/inquiries', inquiriesRouter);
+app.use('/api/favorites', favoriteItemsRouter);
 ////////////////////
 
 mongoose

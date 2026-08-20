@@ -8,6 +8,7 @@ import Browse from './pages/Browse';
 import PublishItem from './pages/PublishItem';
 import MyListings from './pages/MyListings';
 import Inquiries from './pages/Inquiries';
+import Favorites from './pages/Favorites';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="publish" element={<PublishItem />} />
             <Route path="my-listings" element={<MyListings />} />
             <Route path="inquiries" element={<Inquiries />} />
+            <Route path="favorites" element={<Favorites />} />
           </Route>
         </Route>
       </Routes>
