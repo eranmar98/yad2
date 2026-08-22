@@ -9,6 +9,7 @@ import MyListingsScreen from '../screens/MyListingsScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import InquiriesScreen from '../screens/InquiriesScreen';
+import type { NavigationProp } from '@react-navigation/native';
 import type { MainTabParamList, RootStackParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -39,7 +40,7 @@ function MainTabs() {
           const requiresAuth = route.name === 'Publish' || route.name === 'MyListings';
           if (requiresAuth && !token) {
             e.preventDefault();
-            navigation.getParent<any>()?.navigate('Login');
+            navigation.getParent<NavigationProp<RootStackParamList>>()?.navigate('Login');
           }
         },
       })}

@@ -14,8 +14,11 @@ export type RootStackParamList = {
   Inquiries: undefined;
 };
 
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
+declare module '@react-navigation/native' {
+  interface RootParamList {
+    MainTabs: NavigatorScreenParams<MainTabParamList> | undefined;
+    Login: undefined;
+    Register: undefined;
+    Inquiries: undefined;
   }
 }
