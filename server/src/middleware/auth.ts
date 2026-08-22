@@ -15,7 +15,9 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(401).send({ error: 'Please authenticate.' });
     }
     const token = authHeader.replace('Bearer ', '');
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY as string) as { _id: string };
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY as string) as {
+      _id: string;
+    };
     const user = await User.findOne({
       _id: decoded._id,
       'tokens.token': token,
@@ -24,8 +26,8 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     if (!user) {
       throw new Error();
     }
-    req.user = user;
-    req.token = token; // Assign token to the extended Request object
+    (req as Request & { user: typeof user }).user = user;
+    (req as Request & { token: string }).token = token;
 
     next();
   } catch (e: unknown) {
