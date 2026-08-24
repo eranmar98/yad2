@@ -28,6 +28,8 @@ const useUsersStore = create<UsersState>((set) => ({
   login: async (email, password) => {
     set({ isLoading: true });
     try {
+      console.log('sending login request with from services');
+      
       const { user, token } = await UsersServices.login(email, password);
       await AsyncStorage.setItem('token', token);
       set({ user, token, isLoading: false });

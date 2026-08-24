@@ -15,7 +15,7 @@ export type RegisterPayload = {
 };
 
 class UsersServices {
-  static async login(email: string, password: string): Promise<AuthResponse> {
+  static async login(email: string, password: string): Promise<AuthResponse> {    
     const { data } = await api.post<AuthResponse>('/users/login', { email, password });
     return data;
   }
