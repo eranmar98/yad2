@@ -22,14 +22,24 @@ const useUsersStore = create<UsersState>((set) => ({
 
   hydrate: async () => {
     const token = await AsyncStorage.getItem('token');
-    set({ token, isHydrating: false });
+    if (!token) {
+      set({ isHydrating: false });
+      return;
+    }
+
+    try {
+      const { user, token: freshToken } = await UsersServices.autoLogin();
+      await AsyncStorage.setItem('token', freshToken);
+      set({ user, token: freshToken, isHydrating: false });
+    } catch (err) {
+      await AsyncStorage.removeItem('token');
+      set({ user: null, token: null, isHydrating: false });
+    }
   },
 
   login: async (email, password) => {
     set({ isLoading: true });
-    try {
-      console.log('sending login request with from services');
-      
+    try {      
       const { user, token } = await UsersServices.login(email, password);
       await AsyncStorage.setItem('token', token);
       set({ user, token, isLoading: false });

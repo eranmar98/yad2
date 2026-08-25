@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { IUser } from '../models/user';
-import UserServices from '../dataServices/userServices';
+import UserServices from '../services/userServices';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 

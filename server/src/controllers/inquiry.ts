@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { Types } from 'mongoose';
 import { IInquiry } from '../models/inquiry';
-import InquiryServices from '../dataServices/inquiryServices';
-import ItemServices from '../dataServices/itemServices';
+import InquiryServices from '../services/inquiryServices';
+import ItemServices from '../services/itemServices';
 
 type AuthenticatedRequest = Request & {
   user?: {

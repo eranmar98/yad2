@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Types } from 'mongoose';
 import { IItem } from '../models/item';
-import ItemServices from '../dataServices/itemServices';
+import ItemServices from '../services/itemServices';
 import cloudinary from '../config/cloudinary';
 
 type AuthenticatedRequest = Request & {

@@ -24,6 +24,11 @@ class UsersServices {
     const { data } = await api.post<IUser>('/users/new-user', payload);
     return data;
   }
+
+  static async autoLogin(): Promise<AuthResponse> {
+    const { data } = await api.post<AuthResponse>('/users/auto-login');
+    return data;
+  }
 }
 
 export default UsersServices;
