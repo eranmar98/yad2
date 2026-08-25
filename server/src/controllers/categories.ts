@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ICategory } from '../models/category';
-import CategoriesServices from '../dataServices/categoriesServices';
+import CategoriesServices from '../services/categoriesServices';
 
 class CategoriesController {
   static async createCategory(req: Request, res: Response) {
