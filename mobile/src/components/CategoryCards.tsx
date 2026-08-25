@@ -43,11 +43,15 @@ export default function CategoryCards() {
             end={{ x: 1, y: 1 }}
             className="flex flex-col items-center gap-2 p-7"
           >
-            <View className="h-14 w-14 items-center justify-center rounded-full bg-white/15">
-              <FontAwesome5 name={icon} size={22} color="white" />
+            <View className="flex-row items-center gap-4">
+              <View className="h-14 w-14 items-center justify-center rounded-full bg-white/15">
+                <FontAwesome5 name={icon} size={22} color="white" />
+              </View>
+              <View className="flex-col">
+                <Text className="font-display text-lg font-bold text-white">{label}</Text>
+                <Text className="font-sans text-sm text-white/80">{description}</Text>
+              </View>
             </View>
-            <Text className="font-display text-lg font-bold text-white">{label}</Text>
-            <Text className="font-sans text-sm text-white/80">{description}</Text>
           </LinearGradient>
         </Pressable>
       ))}

@@ -19,7 +19,7 @@ export default function LoginScreen() {
 
   const handleSubmit = async () => {
     setError(null);
-    try {
+    try {      
       await login(email, password);
       navigation.navigate('MainTabs', { screen: 'Home' });
     } catch (err) {
@@ -27,7 +27,7 @@ export default function LoginScreen() {
         axios.isAxiosError(err) && (err.response?.data as { error?: string } | undefined)?.error
           ? (err.response!.data as { error: string }).error
           : 'משהו השתבש. נסו שוב.';
-      setError(message);
+      setError(message); 
     }
   };
 
