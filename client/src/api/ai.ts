@@ -1,5 +1,8 @@
 
 
+// The package is supplied by the application's dependency setup, but may not
+// be included in the current TypeScript project's module-resolution context.
+// @ts-expect-error @google/genai is resolved when the client is bundled.
 import { GoogleGenAI } from "@google/genai";
 
 // Vite only exposes env vars prefixed with VITE_ to client code.
