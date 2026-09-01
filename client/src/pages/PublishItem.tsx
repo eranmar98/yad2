@@ -78,7 +78,12 @@ export default function PublishItem() {
       if (axios.isAxiosError(err)) {
         const status = err.response?.status;
         const serverMessage = err.response?.data?.error;
-        setError(`הפרסום נכשל (${status ?? 'שגיאת רשת'}): ${serverMessage ?? 'ללא פרטים נוספים'}`);
+        if (status === 400 && serverMessage) {
+          // Image moderation rejection - the message is already a full, user-facing sentence.
+          setError(serverMessage);
+        } else {
+          setError(`הפרסום נכשל (${status ?? 'שגיאת רשת'}): ${serverMessage ?? 'ללא פרטים נוספים'}`);
+        }
       } else {
         setError('הפרסום נכשל, נסו שוב');
       }

@@ -11,11 +11,14 @@ type UsersState = {
   logout: () => void;
 };
 
+// Define the auth state and actions used throughout the app for login, registration, and logout.
 const useUsersStore = create<UsersState>((set) => ({
+  // Keep the current authenticated user, saved token, and loading state in the client store.
   user: null,
   token: localStorage.getItem('token'),
   isLoading: false,
 
+  // Log the user in by sending credentials to the API, saving the token, and updating the store.
   login: async (email, password) => {
     set({ isLoading: true });
     try {
@@ -28,6 +31,7 @@ const useUsersStore = create<UsersState>((set) => ({
     }
   },
 
+  // Register a new user by calling the backend service and clearing the loading state on completion.
   register: async (payload) => {
     set({ isLoading: true });
     try {
@@ -39,6 +43,7 @@ const useUsersStore = create<UsersState>((set) => ({
     }
   },
 
+  // Sign the user out by removing the stored token and clearing the session from state.
   logout: () => {
     localStorage.removeItem('token');
     set({ user: null, token: null });

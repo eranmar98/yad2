@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { IItem } from '../models/item';
 import ItemServices from '../services/itemServices';
 import cloudinary from '../config/cloudinary';
+import { moderateItemImage } from '../services/imageModerationService';
 
 type AuthenticatedRequest = Request & {
   user?: {
@@ -25,6 +26,17 @@ class ItemController {
       const images: string[] = [];
 
       if (req.file) {
+        const moderation = await moderateItemImage(req.file.buffer, req.file.mimetype, {
+          title: req.body.title,
+          description: req.body.description,
+          category: req.body.category,
+        });
+
+        if (!moderation.isValid) {
+          res.status(400).json({ error: moderation.reason || 'התמונה שהועלתה אינה תקינה עבור מודעה זו.' });
+          return;
+        }
+
         const dataUri = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
         const uploadResult = await cloudinary.uploader.upload(dataUri, {
           folder: 'yad2',
