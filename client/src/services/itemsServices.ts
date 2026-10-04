@@ -20,6 +20,14 @@ export type Item = {
   createdAt: string;
 };
 
+export type PaginatedItems = {
+  items: Item[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
 class ItemsServices {
   static async createItem(payload: CreateItemPayload): Promise<Item> {
     const formData = new FormData();
@@ -42,8 +50,10 @@ class ItemsServices {
     return data;
   }
 
-  static async getItems(filters: { keyword?: string; category?: string } = {}): Promise<Item[]> {
-    const { data } = await api.get<Item[]>('/items', { params: filters });
+  static async getItems(
+    filters: { keyword?: string; category?: string; page?: number; limit?: number } = {},
+  ): Promise<PaginatedItems> {
+    const { data } = await api.get<PaginatedItems>('/items', { params: filters });
     return data;
   }
 }

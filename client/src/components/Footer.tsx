@@ -17,8 +17,8 @@ export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    ItemsServices.getItems()
-      .then((items) => setActiveCount(items.length))
+    ItemsServices.getItems({ limit: 1 })
+      .then(({ total }) => setActiveCount(total))
       .catch(() => setActiveCount(null));
   }, []);
 

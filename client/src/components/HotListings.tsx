@@ -10,8 +10,8 @@ export default function HotListings() {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
   useEffect(() => {
-    ItemsServices.getItems()
-      .then((data) => setItems(data.slice(0, 14)))
+    ItemsServices.getItems({ limit: 14 })
+      .then(({ items }) => setItems(items))
       .catch(() => setItems([]));
   }, []);
 

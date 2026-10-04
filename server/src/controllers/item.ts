@@ -59,8 +59,8 @@ class ItemController {
 
   static async getItems(req: Request, res: Response) {
     try {
-      const items: IItem[] = await ItemServices.getItems(req.query);
-      res.status(200).json(items);
+      const result = await ItemServices.getItems(req.query);
+      res.status(200).json(result);
     } catch (error: unknown) {
       const message = getErrorMessage(error);
       res.status(500).json({ error: message });

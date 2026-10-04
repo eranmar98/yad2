@@ -101,7 +101,6 @@ export default function PublishItem() {
     });
 
   const handleGenerate = async () => {
-
     const prompt = `כתוב לי או שפר את המודעה שתהיה קצרה ומושכת למכירת ${categoryLabel} עם הכותרת "${title}" ותיאור "${description}". המחיר הוא ${price} ש"ח.${
       imageFile ? ' התבסס גם על התמונה המצורפת של הפריט.' : ''
     } חשוב מאוד: החזר אך ורק את טקסט התיאור עצמו, ללא כותרות, ללא הסברים וללא עטיפה של מרכאות או Markdown.`;
