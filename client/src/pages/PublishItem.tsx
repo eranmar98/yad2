@@ -137,7 +137,7 @@ export default function PublishItem() {
   };
 
   return (
-    <section className="mx-auto max-w-2xl px-6 py-16">
+    <section className="mx-auto w-full max-w-4xl px-6 py-16">
       <h1 className="text-center font-display text-3xl font-extrabold text-ink">פרסום מודעה חדשה</h1>
 
       <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-8">

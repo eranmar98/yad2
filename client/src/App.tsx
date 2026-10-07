@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -7,7 +7,6 @@ import Register from './pages/Register';
 import Browse from './pages/Browse';
 import PublishItem from './pages/PublishItem';
 import MyListings from './pages/MyListings';
-import Inquiries from './pages/Inquiries';
 import Favorites from './pages/Favorites';
 
 function App() {
@@ -23,7 +22,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="publish" element={<PublishItem />} />
             <Route path="my-listings" element={<MyListings />} />
-            <Route path="inquiries" element={<Inquiries />} />
+            {/* Inquiries now live in the dashboard messenger. */}
+            <Route path="inquiries" element={<Navigate to="/my-listings?view=messages" replace />} />
             <Route path="favorites" element={<Favorites />} />
           </Route>
         </Route>

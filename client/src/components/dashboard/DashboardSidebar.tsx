@@ -14,6 +14,8 @@ type DashboardSidebarProps = {
   user: IUser | null;
   listingsCount: number;
   messagesCount: number;
+  unreadCount: number;
+  activeView: 'listings' | 'messages';
   favoritesCount: number;
   onOpenAdManagement: () => void;
 };
@@ -27,6 +29,8 @@ export default function DashboardSidebar({
   user,
   listingsCount,
   messagesCount,
+  unreadCount,
+  activeView,
   favoritesCount,
   onOpenAdManagement,
 }: DashboardSidebarProps) {
@@ -38,11 +42,20 @@ export default function DashboardSidebar({
 
   const navItems = [
     {
-      to: '/inquiries',
+      to: '/my-listings',
+      label: 'המודעות שלי',
+      sublabel: 'כל המודעות שפרסמת',
+      icon: HiOutlineRectangleGroup,
+      count: 0,
+      isActive: activeView === 'listings',
+    },
+    {
+      to: '/my-listings?view=messages',
       label: 'ההודעות שלי',
-      sublabel: 'פניות שקיבלת על המודעות שלך',
+      sublabel: 'צ׳אט עם קונים ומוכרים',
       icon: HiOutlineEnvelope,
-      count: messagesCount,
+      count: unreadCount,
+      isActive: activeView === 'messages',
     },
     {
       to: '/favorites',
@@ -50,6 +63,7 @@ export default function DashboardSidebar({
       sublabel: 'מודעות ששמרת לצפייה מאוחרת',
       icon: HiOutlineHeart,
       count: favoritesCount,
+      isActive: false,
     },
   ];
 
@@ -112,7 +126,10 @@ export default function DashboardSidebar({
               <Link
                 key={item.to}
                 to={item.to}
-                className="animate-fade-in-up group flex items-center gap-3 rounded-2xl px-3 py-3 transition-colors duration-150 ease-out hover:bg-white/[0.08] active:scale-[0.99]"
+                aria-current={item.isActive ? 'page' : undefined}
+                className={`animate-fade-in-up group flex items-center gap-3 rounded-2xl px-3 py-3 transition-colors duration-150 ease-out active:scale-[0.99] ${
+                  item.isActive ? 'bg-white/[0.12] ring-1 ring-white/15' : 'hover:bg-white/[0.08]'
+                }`}
                 style={{ animationDelay: `${i * 60 + 150}ms` }}
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/10 transition-transform duration-150 ease-out group-hover:scale-105">
@@ -136,7 +153,7 @@ export default function DashboardSidebar({
               type="button"
               onClick={onOpenAdManagement}
               className="animate-fade-in-up group flex items-center gap-3 rounded-2xl px-3 py-3 text-right transition-colors duration-150 ease-out hover:bg-white/[0.08] active:scale-[0.99]"
-              style={{ animationDelay: '270ms' }}
+              style={{ animationDelay: '330ms' }}
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-brand-purple ring-1 ring-white/10 transition-transform duration-150 ease-out group-hover:scale-105">
                 <HiOutlineArrowTrendingUp className="h-5 w-5" />
@@ -157,7 +174,7 @@ export default function DashboardSidebar({
             </p>
           </div>
 
-          <Link to="/publish" className="animate-fade-in-up" style={{ animationDelay: '340ms' }}>
+          <Link to="/publish" className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
             <PillButton variant="inverse" className="w-full gap-2">
               <HiOutlinePlusCircle className="h-5 w-5" />
               פרסום מודעה חדשה

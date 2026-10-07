@@ -1,11 +1,17 @@
 // server/src/models/inquiry.ts
 import mongoose, { Document } from 'mongoose';
 
+// An inquiry is the conversation between a buyer (userId) and the seller of
+// itemId. `message` is the buyer's opening message; the full thread lives in
+// the Message collection.
 export interface IInquiry extends Document {
   itemId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   message: string;
   status: 'Pending' | 'Answered' | 'Closed';
+  lastMessageAt?: Date;
+  buyerLastReadAt?: Date;
+  sellerLastReadAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +37,15 @@ const inquirySchema = new mongoose.Schema<IInquiry>(
       type: String,
       enum: ['Pending', 'Answered', 'Closed'],
       default: 'Pending',
+    },
+    lastMessageAt: {
+      type: Date,
+    },
+    buyerLastReadAt: {
+      type: Date,
+    },
+    sellerLastReadAt: {
+      type: Date,
     },
   },
   { timestamps: true },
