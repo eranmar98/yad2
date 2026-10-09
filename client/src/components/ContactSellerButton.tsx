@@ -20,7 +20,8 @@ export default function ContactSellerButton({ item, className = '' }: ContactSel
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSent, setIsSent] = useState(false);
+  // The conversation the message landed in, once sent.
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   const isOwnItem = Boolean(user && item.sellerId === user._id);
 
@@ -42,7 +43,7 @@ export default function ContactSellerButton({ item, className = '' }: ContactSel
     }
     setError('');
     setMessage('');
-    setIsSent(false);
+    setConversationId(null);
     setIsOpen(true);
   };
 
@@ -58,8 +59,8 @@ export default function ContactSellerButton({ item, className = '' }: ContactSel
     setError('');
     setIsSubmitting(true);
     try {
-      await InquiriesServices.createInquiry(item._id, message.trim());
-      setIsSent(true);
+      const inquiry = await InquiriesServices.createInquiry(item._id, message.trim());
+      setConversationId(inquiry._id);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const serverMessage = err.response?.data?.error;
@@ -104,13 +105,26 @@ export default function ContactSellerButton({ item, className = '' }: ContactSel
               </button>
             </div>
 
-            {isSent ? (
+            {conversationId ? (
               <div className="text-center">
                 <p className="font-sans text-ink">ההודעה נשלחה בהצלחה!</p>
-                <p className="mt-1 font-sans text-sm text-ink/60">המוכר יקבל את פנייתך ויוכל לחזור אליך.</p>
-                <PillButton variant="primary" className="mt-5 w-full" onClick={closeModal}>
-                  סגירה
+                <p className="mt-1 font-sans text-sm text-ink/60">
+                  תשובת המוכר תופיע בצ׳אט שבאזור האישי שלך.
+                </p>
+                <PillButton
+                  variant="primary"
+                  className="mt-5 w-full"
+                  onClick={() => navigate(`/my-listings?view=messages&c=${conversationId}`)}
+                >
+                  מעבר לשיחה
                 </PillButton>
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="mt-3 font-sans text-sm text-ink/60 hover:text-ink"
+                >
+                  סגירה
+                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
