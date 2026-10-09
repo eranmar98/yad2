@@ -18,9 +18,8 @@ function getInquiryItemId(inquiry: Inquiry): string {
   return typeof inquiry.itemId === 'string' ? inquiry.itemId : inquiry.itemId._id;
 }
 
-function buildInterestSeries(item: Item, itemInquiries: Inquiry[]): ChartPoint[] {
+function buildInterestSeries(item: Item, itemInquiries: Inquiry[], now: number): ChartPoint[] {
   const start = new Date(item.createdAt).getTime();
-  const now = Date.now();
   const totalDays = Math.max(0, (now - start) / 86_400_000);
   const bucketCount = Math.max(4, Math.min(12, Math.ceil(totalDays) + 1));
   const sortedTimes = itemInquiries
@@ -47,6 +46,7 @@ export default function AdPerformanceModal({
   initialItemId,
 }: AdPerformanceModalProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [now] = useState(() => Date.now());
 
   useEffect(() => {
     if (isOpen) setSelectedId(initialItemId ?? items[0]?._id ?? null);
@@ -76,7 +76,7 @@ export default function AdPerformanceModal({
 
   const selectedItem = items.find((it) => it._id === selectedId) ?? null;
   const selectedInquiries = selectedId ? (inquiriesByItem.get(selectedId) ?? []) : [];
-  const points = selectedItem ? buildInterestSeries(selectedItem, selectedInquiries) : [];
+  const points = selectedItem ? buildInterestSeries(selectedItem, selectedInquiries, now) : [];
 
   const totalForSelected = selectedInquiries.length;
   const totalAcrossAll = inquiries.length;
@@ -84,7 +84,7 @@ export default function AdPerformanceModal({
   const deltaPct =
     avgPerListing > 0 ? Math.round(((totalForSelected - avgPerListing) / avgPerListing) * 100) : null;
   const daysLive = selectedItem
-    ? Math.max(0, Math.floor((Date.now() - new Date(selectedItem.createdAt).getTime()) / 86_400_000))
+    ? Math.max(0, Math.floor((now - new Date(selectedItem.createdAt).getTime()) / 86_400_000))
     : 0;
 
   return (
