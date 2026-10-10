@@ -13,6 +13,17 @@ function toPositiveInt(value: unknown, fallback: number): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
+function toNonNegativeNumber(value: unknown): number | undefined {
+  if (value === undefined || value === '') return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+}
+
+// A category path also matches its subcategories, e.g. "מוצרים" matches "מוצרים / טלפונים".
+function categoryPathRegex(path: string): RegExp {
+  return new RegExp(`^${escapeRegExp(path)}($| / )`);
+}
+
 export type PaginatedItems = {
   items: IItem[];
   total: number;
@@ -28,21 +39,45 @@ class ItemServices {
   }
 
   static async getItems(filter: QueryFilter<IItem> = {}): Promise<PaginatedItems> {
-    const { category, keyword, page: rawPage, limit: rawLimit, ...rest } = filter as {
+    const {
+      category,
+      categories: rawCategories,
+      keyword,
+      minPrice: rawMinPrice,
+      maxPrice: rawMaxPrice,
+      page: rawPage,
+      limit: rawLimit,
+      ...rest
+    } = filter as {
       category?: string;
+      categories?: string | string[];
       keyword?: string;
+      minPrice?: string;
+      maxPrice?: string;
       page?: string;
       limit?: string;
     } & QueryFilter<IItem>;
     const query: QueryFilter<IItem> = { ...rest };
     if (category) {
-      // A category path also matches its subcategories, e.g. "מוצרים" matches "מוצרים / טלפונים".
-      query.category = new RegExp(`^${escapeRegExp(category)}($| / )`);
+      query.category = categoryPathRegex(category);
+    }
+    if (rawCategories !== undefined) {
+      // Narrows the main category to the sub-paths picked in the filter sidebar; an empty value
+      // means every option was unchecked, so nothing matches.
+      const categories = (Array.isArray(rawCategories) ? rawCategories : [rawCategories]).filter(Boolean);
+      query.$and = [{ category: { $in: categories.map(categoryPathRegex) } }];
+    }
+    const minPrice = toNonNegativeNumber(rawMinPrice);
+    const maxPrice = toNonNegativeNumber(rawMaxPrice);
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      query.price = {
+        ...(minPrice !== undefined && { $gte: minPrice }),
+        ...(maxPrice !== undefined && { $lte: maxPrice }),
+      };
     }
     if (keyword) {
-      // Free-text search across title/description; "keyword" isn't a schema field on its own.
-      const keywordRegex = new RegExp(escapeRegExp(keyword), 'i');
-      query.$or = [{ title: keywordRegex }, { description: keywordRegex }];
+      // Case-insensitive substring match on the title; "keyword" isn't a schema field on its own.
+      query.title = new RegExp(escapeRegExp(keyword), 'i');
     }
 
     const limit = Math.min(toPositiveInt(rawLimit, DEFAULT_PAGE_SIZE), MAX_PAGE_SIZE);

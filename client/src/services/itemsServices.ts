@@ -20,6 +20,17 @@ export type Item = {
   createdAt: string;
 };
 
+export type ItemFilters = {
+  keyword?: string;
+  category?: string;
+  // Sub-category paths to narrow `category` to; an empty list matches nothing.
+  categories?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  page?: number;
+  limit?: number;
+};
+
 export type PaginatedItems = {
   items: Item[];
   total: number;
@@ -50,10 +61,14 @@ class ItemsServices {
     return data;
   }
 
-  static async getItems(
-    filters: { keyword?: string; category?: string; page?: number; limit?: number } = {},
-  ): Promise<PaginatedItems> {
-    const { data } = await api.get<PaginatedItems>('/items', { params: filters });
+  static async getItems(filters: ItemFilters = {}): Promise<PaginatedItems> {
+    const { categories, ...rest } = filters;
+    const { data } = await api.get<PaginatedItems>('/items', {
+      // An empty list is sent as an empty value so the server matches nothing, instead of dropping the filter.
+      params: { ...rest, categories: categories && (categories.length ? categories : '') },
+      // Repeat the key for each value (categories=a&categories=b) instead of categories[]=a.
+      paramsSerializer: { indexes: null },
+    });
     return data;
   }
 }
