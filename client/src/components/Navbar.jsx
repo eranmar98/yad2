@@ -1,7 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa';
 import { navLinks } from '../siteContent';
-import ToggleMark from '../ToggleMark';
 import PillButton from './PillButton';
 import useUsersStore from '../store/usersStore';
 import logo from '../assets/logo.svg';
@@ -73,7 +72,6 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center justify-self-center gap-2">
-          <ToggleMark />
           <Link to="/" className={focusRing}>
             <img src={logo} alt="לוח מודעות" className="h-11 w-auto" />
           </Link>
