@@ -120,7 +120,7 @@ export default function PublishItem() {
       const result = await ai.models.generateContent({
         model: 'gemini-3.5-flash',
         contents: createUserContent(parts),
-      });
+      }); 
 
       if (!result.text) {
         toast.error('לא התקבלה תגובה מהמודל. נסה שוב מאוחר יותר.');
