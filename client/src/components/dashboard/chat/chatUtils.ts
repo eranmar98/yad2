@@ -14,7 +14,6 @@ export function formatClock(value: string): string {
   return new Date(value).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
 }
 
-/** Compact time for the conversation list: 14:32 / אתמול / יום ג׳ / 3.5.26 */
 export function formatListTime(value: string): string {
   const diff = daysAgo(value);
   if (diff === 0) return formatClock(value);
@@ -23,7 +22,6 @@ export function formatListTime(value: string): string {
   return new Date(value).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: '2-digit' });
 }
 
-/** Day separator inside a thread: היום / אתמול / יום ראשון, 4 באוקטובר */
 export function formatDayLabel(value: string): string {
   const diff = daysAgo(value);
   if (diff === 0) return 'היום';
